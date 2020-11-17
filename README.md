@@ -5,7 +5,9 @@ demo code is in `/src/main/java/com/mcc/vehicle`
 test code is in `/src/test/java/com/mcc/vehicle`  
 
 Main File Structure:  
-[controller]: Deal with the Http request and assign which service to use.  
-[domain]: Define Vehicle class.  
-[repository]: Simulate a in-memory database.   
-[service]: Customize exceptions, validate input, implement CRUD services.   
+[controller]: Main controller  
+[domain]: Vehicle class Definition.  
+[repository]: In-memory database.  
+[service]: CRUD services implementation.  
+[exception]: Custom exceptions.  
+[validation]: business logic validation.   
