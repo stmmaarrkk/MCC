@@ -58,22 +58,22 @@ class VehicleServiceValidatorTest {
 
     @Test
     void checkFilter_ReturnTrue_ValidFilter() {
-        var validFilterFields = vehicleServiceValidator.getValidFilterFields();
+        var validFilterAttributes = vehicleServiceValidator.getValidFilterAttributes();
 
         Map<String, String> filter= new HashMap<>();
 
         //iterate every valid field
-        for (var field: validFilterFields) {
+        for (var field: validFilterAttributes) {
             filter.put(field, "0" ); //filter item get an extra entry in each iteration
             assertTrue(vehicleServiceValidator.checkFilter(filter));
         }
     }
     @Test
     void checkFilter_ReturnFalse_InvalidFilter() {
-        var validFilterFields = vehicleServiceValidator.getValidFilterFields();
+        var validFilterAttributes = vehicleServiceValidator.getValidFilterAttributes();
 
         //iterate every valid field
-        for (var field: validFilterFields) {
+        for (var field: validFilterAttributes) {
             //test only one entry each iteration
             assertFalse(vehicleServiceValidator.checkFilter(Map.of(field+"&#$(*%", "0" )));
         }

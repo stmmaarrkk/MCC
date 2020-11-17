@@ -100,7 +100,7 @@ class VehicleServiceInMemoryTest {
     @Test
     void getAll_ThrowVehicleServiceValidationException_InvalidFilter(){
 
-        Map<String, String> filter = Map.of("sadasdasd", "7788"); //sadasdasd is not a legal field
+        Map<String, String> filter = Map.of("sadasdasd", "7788"); //sadasdasd is not a legal class attribute
         when(vehicleServiceValidator.checkFilter(filter)).thenReturn(false);
 
         assertThrows(VehicleServiceValidationException.class, ()->{
@@ -116,7 +116,7 @@ class VehicleServiceInMemoryTest {
     /*---------------------------------create---------------------------------*/
 
     @Test
-    void addOne_ThrowVehicleServiceValidationException_ExistingIdValidFields() {
+    void addOne_ThrowVehicleServiceValidationException_ExistingIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "camry");
 
@@ -131,7 +131,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void addOne_ReturnVehicle_NotExistingIdValidFields() {
+    void addOne_ReturnVehicle_NotExistingIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "camry");
 
@@ -144,7 +144,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void addOne_ThrowVehicleServiceValidationException_NotExistingIdInvalidFields() {
+    void addOne_ThrowVehicleServiceValidationException_NotExistingIdInvalidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 2005, "toyota", "invalidModel"); //invalid Model
 
@@ -161,7 +161,7 @@ class VehicleServiceInMemoryTest {
 
     /*---------------------------------update---------------------------------*/
     @Test
-    void updateVehicle_ReturnVehicle_ExistingIdValidFields() {
+    void updateVehicle_ReturnVehicle_ExistingIdValidAttributes() {
         Integer id = 1;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "testModel");
 
@@ -176,7 +176,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void updateVehicle_ThrowVehicleServiceValidationException_NotExistingIdValidFields() {
+    void updateVehicle_ThrowVehicleServiceValidationException_NotExistingIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "testModel");
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
@@ -189,7 +189,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void updateVehicle_ThrowVehicleServiceValidationException_ExistingIdInvalidFields() {
+    void updateVehicle_ThrowVehicleServiceValidationException_ExistingIdInvalidAttributes() {
         Integer id = 1;
         Vehicle vehicle = new Vehicle(id, 1966, "invalidMake", "testModel");
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(false);

@@ -20,7 +20,7 @@ public class VehicleServiceValidator {
             "911","porsche",
             "cx9", "mazda"
     );
-    private final Set<String> ValidFilterFields = Set.of(
+    private final Set<String> ValidFilterAttributes = Set.of(
             "id",
             "year",
             "make",
@@ -36,21 +36,21 @@ public class VehicleServiceValidator {
         return ValidMakeModelPair;
     }
     
-    public Set<String> getValidFilterFields() {
-        return ValidFilterFields;
+    public Set<String> getValidFilterAttributes() {
+        return ValidFilterAttributes;
     }
 
     public Boolean checkYearRange(Integer year){
-        return (year == null) ? false : (year >= ValidYearInterval.get(0) && year <= ValidYearInterval.get(1));
+        return year != null && (year >= ValidYearInterval.get(0) && year <= ValidYearInterval.get(1));
     }
     public Boolean checkMakeModelPair(String make, String model){
         //Use vehicle.model to check whether itself is in the map
         //if not, or its corresponding value to the key is not equal to that of the vehicle, return false
-        return (make == null || model == null)? false : make.equals(ValidMakeModelPair.get(model));
+        return make != null && model != null && make.equals(ValidMakeModelPair.get(model));
     }
     public Boolean checkFilter(Map<String, String> filter){
         for(String k : filter.keySet()){
-            if(!ValidFilterFields.contains(k))//illegal filter field
+            if(!ValidFilterAttributes.contains(k))//illegal filter attributes
                 return false;
         }
         return true;

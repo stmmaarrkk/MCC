@@ -33,5 +33,4 @@ abstract public class Transportation {
     private String Make;
     @NotNull(message = "model should not be null")
     private String Model;
-
 }

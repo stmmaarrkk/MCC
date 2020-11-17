@@ -22,12 +22,6 @@ public class VehicleServiceInMemory implements VehicleService {
     @Autowired
     private final VehicleServiceValidator vehicleServiceValidator;
 
-//    public VehicleServiceInMemory(VehicleRepository vehicleRepository,
-//                                  VehicleServiceValidator vehicleServiceValidator){
-//        this.vehicleRepository = vehicleRepository;
-//        this.vehicleServiceValidator = vehicleServiceValidator;
-//    }
-
     @Override
     public Vehicle getVehicleById(Integer id) {
         /*Validation*/

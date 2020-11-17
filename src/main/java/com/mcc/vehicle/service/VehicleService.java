@@ -9,7 +9,7 @@ import java.util.*;
 public interface VehicleService {
     Vehicle getVehicleById(Integer id);
     List<Vehicle> getAllVehicles(Map<String, String> filter);
-    Vehicle updateVehicle(Vehicle v); //either id not found or invalid syntax will return null
+    Vehicle updateVehicle(Vehicle v);
     Vehicle saveVehicle(Vehicle v);
     Vehicle deleteVehicleById(Integer id);
 }
