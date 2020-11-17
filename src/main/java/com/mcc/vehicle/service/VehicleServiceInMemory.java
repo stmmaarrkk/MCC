@@ -1,16 +1,17 @@
 package com.mcc.vehicle.service;
 
 import com.mcc.vehicle.domain.Vehicle;
+import com.mcc.vehicle.exception.VehicleNotFoundException;
+import com.mcc.vehicle.exception.VehicleServiceException;
+import com.mcc.vehicle.exception.VehicleServiceValidationException;
 import com.mcc.vehicle.repository.VehicleRepository;
+import com.mcc.vehicle.validation.VehicleServiceValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.beans.Statement;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Service
@@ -67,8 +68,6 @@ public class VehicleServiceInMemory implements VehicleService {
         /*Validation*/
         if(!vehicleServiceValidator.checkYearRange(vehicle.getYear()))
             throw new VehicleServiceValidationException("Year is invalid");
-        if(!vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel()))
-            throw new VehicleServiceValidationException("Make-Model pair is invalid");
         if(!vehicleRepository.existsById(vehicle.getId()))
             throw new VehicleNotFoundException();
 
@@ -86,8 +85,6 @@ public class VehicleServiceInMemory implements VehicleService {
         /*Validation*/
         if(!vehicleServiceValidator.checkYearRange(vehicle.getYear()))
             throw new VehicleServiceValidationException("Year is invalid");
-        if(!vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel()))
-            throw new VehicleServiceValidationException("Make-Model pair is invalid");
         if (vehicleRepository.existsById(vehicle.getId()))
             throw new VehicleServiceValidationException("Queried id is already in the DB");
 

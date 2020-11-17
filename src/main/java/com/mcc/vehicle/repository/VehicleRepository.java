@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
-}
+public interface VehicleRepository extends JpaRepository<Vehicle, Integer> { }
 
 
 

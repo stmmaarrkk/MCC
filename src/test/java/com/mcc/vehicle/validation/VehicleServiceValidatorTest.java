@@ -1,11 +1,7 @@
-package com.mcc.vehicle.service;
+package com.mcc.vehicle.validation;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.mcc.vehicle.validation.VehicleServiceValidator;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,46 +32,28 @@ class VehicleServiceValidatorTest {
         assertFalse(vehicleServiceValidator.checkYearRange(negative));
     }
 
-
-    @Test
-    void checkMakeModelPair_ReturnTrue_ValidPair() {
-        var validMakeModelPair = vehicleServiceValidator.getValidMakeModelPair();
-        for (Map.Entry<String,String> entry : validMakeModelPair.entrySet())
-            assertTrue(vehicleServiceValidator.checkMakeModelPair(entry.getValue(), entry.getKey()));
-
-    }
-    @Test
-    void checkMakeModelPair_ReturnFalse_InvalidPair() {
-        var validMakeModelPair = vehicleServiceValidator.getValidMakeModelPair();
-
-        for (Map.Entry<String,String> entry : validMakeModelPair.entrySet())
-            //add symbol make make illegal
-            assertFalse(vehicleServiceValidator.checkMakeModelPair(entry.getValue()+"&#$(*%", entry.getKey()));
-        for (Map.Entry<String,String> entry : validMakeModelPair.entrySet())
-            //add symbol make model illegal
-            assertFalse(vehicleServiceValidator.checkMakeModelPair(entry.getValue(), entry.getKey()+"&#$(*%"));
-    }
-
     @Test
     void checkFilter_ReturnTrue_ValidFilter() {
         var validFilterAttributes = vehicleServiceValidator.getValidFilterAttributes();
 
         Map<String, String> filter= new HashMap<>();
 
-        //iterate every valid field
+        //iterate every valid attribute
         for (var field: validFilterAttributes) {
-            filter.put(field, "0" ); //filter item get an extra entry in each iteration
+            filter.put(field, "0" ); //filter get an extra entry in each iteration
             assertTrue(vehicleServiceValidator.checkFilter(filter));
         }
     }
+
     @Test
     void checkFilter_ReturnFalse_InvalidFilter() {
         var validFilterAttributes = vehicleServiceValidator.getValidFilterAttributes();
 
-        //iterate every valid field
+        //iterate every valid attribute
         for (var field: validFilterAttributes) {
             //test only one entry each iteration
             assertFalse(vehicleServiceValidator.checkFilter(Map.of(field+"&#$(*%", "0" )));
         }
+
     }
 }

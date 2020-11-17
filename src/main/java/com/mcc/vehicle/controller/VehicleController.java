@@ -20,7 +20,6 @@ import java.util.Map;
 
 @RequestMapping(VehicleController.BASE_URL)
 @AllArgsConstructor
-@Validated
 @RestController
 public class VehicleController {
     public static final String BASE_URL = "/vehicles";
@@ -56,6 +55,7 @@ public class VehicleController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<Vehicle> saveVehicle(@Valid @RequestBody Vehicle v){ //if any attribute in v is not valid type, it will return 400
         System.out.println("[Create]");
+
         return new ResponseEntity<>(vehicleService.saveVehicle(v), HttpStatus.CREATED);
     }
 
@@ -66,7 +66,7 @@ public class VehicleController {
     }
 
     @DeleteMapping(path="/{id}", produces = "application/json")
-    public ResponseEntity<Vehicle> deleteVehicleById(@NotNull @PathVariable Integer id){ //pathvariable here gaurantee id will mapping to variable in path
+    public ResponseEntity<Vehicle> deleteVehicleById(@PathVariable Integer id){ //pathvariable here gaurantee id will mapping to variable in path
         System.out.println("[Delete] | parameters: " + id);
         return new ResponseEntity<>(vehicleService.deleteVehicleById(id), HttpStatus.OK);
     }

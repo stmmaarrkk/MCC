@@ -4,36 +4,25 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mcc.vehicle.domain.Vehicle;
 import com.mcc.vehicle.repository.VehicleRepository;
-import com.mcc.vehicle.service.VehicleService;
-import com.mcc.vehicle.service.VehicleServiceValidator;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -184,12 +173,12 @@ class VehicleControllerIntegrationTests {
         var res = mvc.perform(request).andReturn().getResponse();
         //Http Status
         Integer status = res.getStatus();
-        assertTrue(status.equals(200), ()->"Http Status should be OK");
+        assertEquals((int)status, 200, () -> "Http Status should be OK");
 
         Vehicle vehicle = new ObjectMapper().readValue(res.getContentAsString(), Vehicle.class);
         Vehicle expect = vehicleRepository.findById(id).orElse(null);
 
-        assertTrue(vehicle.equals(expect), ()->"Body must be the same");
+        assertEquals(expect, vehicle, () -> "Body must be the same");
     }
 
     @Test
@@ -205,11 +194,22 @@ class VehicleControllerIntegrationTests {
         assertTrue(status.equals(404), ()->"Http Status should be Not found");
     }
 
+    @Test
+    @Order(5)
+    void getVehicleById_ReturnBadRequest_InvalidId() throws Exception{
+        String id = "aaa";
+        RequestBuilder request = MockMvcRequestBuilders.get(BASE_URL + "/{id}", id);
+
+        var res = mvc.perform(get(BASE_URL+ "/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 
     @Test
     @Order(6)
-    void saveVehicle_ReturnBadRequest_NotExistingIdInvalidEntities() throws Exception {
-        Vehicle v = new Vehicle(100, 1966, null, "*%&SK#");
+    void saveVehicle_ReturnBadRequest_NonExistentIdInvalidEntities() throws Exception {
+        Vehicle v = new Vehicle(100, 1966, "", "camry"); //empty make
 
         //Converting the Object to JSONString
         String jsonString = new ObjectMapper().writeValueAsString(v);
@@ -254,8 +254,9 @@ class VehicleControllerIntegrationTests {
 
     }
 
+    @Test
     @Order(7)
-    void saveVehicle_ReturnCreated_NotExistingId() throws Exception {
+    void saveVehicle_ReturnCreated_NonExistentId() throws Exception {
         Vehicle v = new Vehicle(101, 1966, "toyota", "camry");
 
         //Converting the Object to JSONString
@@ -269,7 +270,7 @@ class VehicleControllerIntegrationTests {
 
     @Test
     @Order(8)
-    void updateVehicle_ReturnNotFound_NotExistingId() throws Exception {
+    void updateVehicle_ReturnNotFound_NonExistentId() throws Exception {
         Vehicle v = new Vehicle(400, 1966, "toyota", "camry");
 
         String jsonString = new ObjectMapper().writeValueAsString(v);
@@ -330,7 +331,7 @@ class VehicleControllerIntegrationTests {
 
     @Test
     @Order(9)
-    void deleteVehicleById_ReturnNotFund_NotExistingId() throws Exception {
+    void deleteVehicleById_ReturnNotFund_NonExistentId() throws Exception {
         Integer id = 4041;
         RequestBuilder request = MockMvcRequestBuilders.delete(BASE_URL + "/{id}", id);
 
@@ -352,6 +353,17 @@ class VehicleControllerIntegrationTests {
 
         assertTrue(status.equals(200), ()->"Http Status should be OK");
         assertNull(vehicleRepository.findById(id).orElse(null));
+    }
+    
+    @Test
+    @Order(10)
+    void deleteVehicleById_ReturnBadRequest_InvalidId() throws Exception{
+        String id = "a";
+        RequestBuilder request = MockMvcRequestBuilders.delete(BASE_URL + "/{id}", id);
+
+        var res = mvc.perform(delete(BASE_URL+ "/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 }

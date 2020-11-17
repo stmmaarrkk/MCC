@@ -1,4 +1,4 @@
-package com.mcc.vehicle.service;
+package com.mcc.vehicle.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

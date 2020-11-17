@@ -12,10 +12,10 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@Valid
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance
@@ -25,12 +25,17 @@ abstract public class Transportation {
     //@ check only valid at controller
     //null is still a valid type of its entities
     @javax.persistence.Id
-    @NotNull(message = "id should not be null")
+    @NotNull
     private Integer Id;
-    @NotNull(message = "year should not be null")
+
+    @NotNull
     private Integer Year;
-    @NotNull(message = "make should not be null")
+
+    @NotNull
+    @NotBlank
     private String Make;
-    @NotNull(message = "model should not be null")
+
+    @NotNull
+    @NotBlank
     private String Model;
 }

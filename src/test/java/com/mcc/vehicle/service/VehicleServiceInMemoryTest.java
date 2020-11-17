@@ -1,12 +1,14 @@
 package com.mcc.vehicle.service;
 
 import com.mcc.vehicle.domain.Vehicle;
+import com.mcc.vehicle.exception.VehicleNotFoundException;
+import com.mcc.vehicle.exception.VehicleServiceValidationException;
 import com.mcc.vehicle.repository.VehicleRepository;
+import com.mcc.vehicle.validation.VehicleServiceValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Example;
 
@@ -39,20 +41,21 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void getVehicleById_ThrowRuntimeException_NotExistingId() {
+    void getVehicleById_ThrowRuntimeException_NonExistentId() {
         Integer id = 7;
 
         when(vehicleRepository.existsById(id)).thenReturn(false);
+
         assertThrows(VehicleNotFoundException.class, ()->{
             vehicleServiceInMemory.getVehicleById(id);
         });
     }
 
 
-    /*---------------------------------getAll---------------------------------*/
+    /*---------------------------------getAllVehicles---------------------------------*/
 
     @Test
-    void getAll_ReturnVehicle_NoFilter(){
+    void getAllVehicles_ReturnVehicle_NoFilter(){
         List<Vehicle> list = new ArrayList<>();
         list.add(new Vehicle(1, 2015,"toyota", "camry"));
         list.add(new Vehicle(2, 2011, "porsche", "911"));
@@ -68,7 +71,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void getAll_ReturnVehicle_ExistingVehicleWithFilter(){
+    void getAllVehicles_ReturnVehicle_ExistingVehicleWithFilter(){
         Integer year = 2015;
         List<Vehicle> list = new ArrayList<>();
         list.add(new Vehicle(1, year,"toyota", "camry"));
@@ -84,7 +87,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void getAll_ReturnEmptyList_NoExistingVehicle(){
+    void getAllVehicles_ReturnEmptyList_NoExistingVehicle(){
         Integer year = 2030;
         List<Vehicle> list = new ArrayList<>();
 
@@ -98,7 +101,7 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void getAll_ThrowVehicleServiceValidationException_InvalidFilter(){
+    void getAllVehicles_ThrowVehicleServiceValidationException_InvalidFilter(){
 
         Map<String, String> filter = Map.of("sadasdasd", "7788"); //sadasdasd is not a legal class attribute
         when(vehicleServiceValidator.checkFilter(filter)).thenReturn(false);
@@ -116,12 +119,11 @@ class VehicleServiceInMemoryTest {
     /*---------------------------------create---------------------------------*/
 
     @Test
-    void addOne_ThrowVehicleServiceValidationException_ExistingIdValidAttributes() {
+    void saveVehicle_ThrowVehicleServiceValidationException_ExistingIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "camry");
 
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
-        when(vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel())).thenReturn(true);
         when(vehicleRepository.existsById(id)).thenReturn(true);
 
 
@@ -131,12 +133,11 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void addOne_ReturnVehicle_NotExistingIdValidAttributes() {
+    void saveVehicle_ReturnVehicle_NonExistentIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "camry");
 
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
-        when(vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel())).thenReturn(true);
         when(vehicleRepository.existsById(id)).thenReturn(false);
         when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
 
@@ -144,12 +145,11 @@ class VehicleServiceInMemoryTest {
     }
 
     @Test
-    void addOne_ThrowVehicleServiceValidationException_NotExistingIdInvalidAttributes() {
+    void saveVehicle_ThrowVehicleServiceValidationException_NonExistentIdInvalidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 2005, "toyota", "invalidModel"); //invalid Model
 
-        when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
-        when(vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel())).thenReturn(false);
+        when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(false);
 
         assertThrows(VehicleServiceValidationException.class, ()->{
             vehicleServiceInMemory.saveVehicle(vehicle);
@@ -166,21 +166,19 @@ class VehicleServiceInMemoryTest {
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "testModel");
 
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
-        when(vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel())).thenReturn(true);
         when(vehicleRepository.existsById(id)).thenReturn(true);
         when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
 
-        assertTrue(vehicleServiceInMemory.updateVehicle(vehicle).equals(vehicle));
+        assertEquals(vehicle, vehicleServiceInMemory.updateVehicle(vehicle));
 
         verify(vehicleRepository).existsById(id); //check if data have been save to DB
     }
 
     @Test
-    void updateVehicle_ThrowVehicleServiceValidationException_NotExistingIdValidAttributes() {
+    void updateVehicle_ThrowVehicleServiceValidationException_NonExistentIdValidAttributes() {
         Integer id = 8;
         Vehicle vehicle = new Vehicle(id, 1980, "toyota", "testModel");
         when(vehicleServiceValidator.checkYearRange(vehicle.getYear())).thenReturn(true);
-        when(vehicleServiceValidator.checkMakeModelPair(vehicle.getMake(), vehicle.getModel())).thenReturn(true);
         when(vehicleRepository.existsById(vehicle.getId())).thenReturn(false);
 
         assertThrows(VehicleNotFoundException.class, ()->{
@@ -204,7 +202,7 @@ class VehicleServiceInMemoryTest {
     /*---------------------------------delete---------------------------------*/
 
     @Test
-    void deleteOne_ReturnVehicle_IdExisting() {
+    void deleteVehicleById_ReturnVehicle_IdExisting() {
         Integer id = 0;
         Vehicle vehicle = new Vehicle(id, 2015, "toyota", "camry");
 
@@ -215,7 +213,7 @@ class VehicleServiceInMemoryTest {
         assertTrue(vehicleServiceInMemory.deleteVehicleById(id).equals(vehicle));
     }
     @Test
-    void deleteOne_ThrowRuntimeException_IdNotExisted() {
+    void deleteVehicleById_ThrowRuntimeException_IdNotExisted() {
         Integer id = 7;
         Vehicle vehicle = new Vehicle(id, 2015, "toyota", "camry");
 
