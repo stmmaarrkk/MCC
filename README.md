@@ -1,4 +1,3 @@
-# MCC
 It's a MVC structured model performed CRUD operations for vehicles.  
 
 demo code is in `/src/main/java/com/mcc/vehicle`  
